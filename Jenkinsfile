@@ -46,7 +46,10 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            steps {
+    when {
+        expression { return env.SONARQUBE_URL != null }
+    }
+    steps {
                 script {
                     echo "Iniciando análise de qualidade do código (SonarQube)..."
                     def scannerHome = tool 'SonarQubeScanner'
