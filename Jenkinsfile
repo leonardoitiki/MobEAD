@@ -15,14 +15,14 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "Compilando o projeto..."
-                sh "${MAVEN_HOME}/bin/mvn clean package"
+                echo "Compiling the project..."
+                sh "${MAVEN_HOME}/bin/mvn -B clean package"
             }
         }
 
-        stage('Testes Automatizados') {
+        stage('Automated Tests') {
             steps {
-                echo "Executando testes..."
+                echo "Running unit tests..."
                 sh "${MAVEN_HOME}/bin/mvn test"
             }
             post {
@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Análise SonarQube') {
+        stage('SonarQube Analysis') {
             steps {
                 script {
                     def scannerHome = tool 'SonarQubeScanner'
@@ -43,33 +43,33 @@ pipeline {
             }
         }
 
-        stage('Deploy em Desenvolvimento') {
+        stage('Deploy to Development') {
             steps {
-                echo "Realizando deploy no ambiente de Desenvolvimento..."
-                sh "cp target/*.war /var/lib/tomcat9/webapps/dev-app.war"
+                echo "Deploying to Development environment..."
+                sh "cp target/*.war /usr/local/tomcat/webapps/dev-app.war"
             }
         }
 
-        stage('Aprovação para Produção') {
+        stage('Approval for Production') {
             steps {
-                input message: "Deseja liberar para Produção?", ok: "Deploy"
+                input message: "Release to Production?", ok: "Deploy"
             }
         }
 
-        stage('Deploy em Produção') {
+        stage('Deploy to Production') {
             steps {
-                echo "Realizando deploy no ambiente de Produção..."
-                sh "cp target/*.war /var/lib/tomcat9/webapps/prod-app.war"
+                echo "Deploying to Production environment..."
+                sh "cp target/*.war /usr/local/tomcat/webapps/prod-app.war"
             }
         }
     }
 
     post {
         success {
-            echo "Pipeline finalizada com sucesso!"
+            echo "Pipeline completed successfully!"
         }
         failure {
-            echo "Falha na pipeline!"
+            echo "Pipeline failed!"
         }
     }
 }
