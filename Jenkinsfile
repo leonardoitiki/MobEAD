@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE = 'SonarQube'
         MAVEN_HOME = tool 'Maven'
     }
 
@@ -15,20 +14,15 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "Compiling the project..."
-                sh "${MAVEN_HOME}/bin/mvn -B clean package"
+                echo "Compilando o projeto..."
+                bat "${MAVEN_HOME}\\bin\\mvn clean package"
             }
         }
 
         stage('Automated Tests') {
             steps {
-                echo "Running unit tests..."
-                sh "${MAVEN_HOME}/bin/mvn test"
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
+                echo "Executando testes..."
+                bat "${MAVEN_HOME}\\bin\\mvn test"
             }
         }
 
@@ -37,7 +31,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQubeScanner'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=MobEAD -Dsonar.sources=src"
+                        bat "${scannerHome}\\bin\\sonar-scanner -Dsonar.projectKey=MobEAD -Dsonar.sources=src"
                     }
                 }
             }
@@ -45,31 +39,31 @@ pipeline {
 
         stage('Deploy to Development') {
             steps {
-                echo "Deploying to Development environment..."
-                sh "cp target/*.war /usr/local/tomcat/webapps/dev-app.war"
+                echo "Fazendo deploy no ambiente de desenvolvimento..."
+                bat 'copy target\\*.war C:\\Tomcat\\webapps\\dev-app.war'
             }
         }
 
         stage('Approval for Production') {
             steps {
-                input message: "Release to Production?", ok: "Deploy"
+                input message: "Deseja liberar para Produção?", ok: "Deploy"
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo "Deploying to Production environment..."
-                sh "cp target/*.war /usr/local/tomcat/webapps/prod-app.war"
+                echo "Fazendo deploy no ambiente de produção..."
+                bat 'copy target\\*.war C:\\Tomcat\\webapps\\prod-app.war'
             }
         }
     }
 
     post {
         success {
-            echo "Pipeline completed successfully!"
+            echo "Pipeline executada com sucesso!"
         }
         failure {
-            echo "Pipeline failed!"
+            echo "Pipeline falhou!"
         }
     }
 }
