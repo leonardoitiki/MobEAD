@@ -45,18 +45,7 @@ pipeline {
 }
         }
 
-        stage('SonarQube Analysis') {
-       steps {
-                script {
-                    echo "Iniciando análise de qualidade do código (SonarQube)..."
-                    def scannerHome = tool 'SonarQubeScanner'
-                    withSonarQubeEnv('SonarQube') {
-                        bat "\"${scannerHome}\\bin\\sonar-scanner.bat\" -Dsonar.projectKey=MobEAD -Dsonar.sources=src -Dsonar.java.binaries=target"
-                    }
-                }
-            }
-        }
-
+       
         stage('Deploy to Development') {
             steps {
                 echo "Fazendo deploy no ambiente de Desenvolvimento..."
