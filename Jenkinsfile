@@ -30,10 +30,19 @@ pipeline {
                 bat "\"%MAVEN_HOME%\\bin\\mvn\" test"
             }
             post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
+    success {
+        script {
+            if (fileExists('target/surefire-reports')) {
+                junit 'target/surefire-reports/*.xml'
+            } else {
+                echo "Nenhum relatório JUnit encontrado — possivelmente sem testes."
             }
+        }
+    }
+    failure {
+        echo "Falha durante a execução da pipeline!"
+    }
+}
         }
 
         stage('SonarQube Analysis') {
