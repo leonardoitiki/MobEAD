@@ -50,7 +50,7 @@ pipeline {
             steps {
                 echo "Fazendo deploy no ambiente de Desenvolvimento..."
                 // Ajuste o caminho do Tomcat local
-               bat 'copy target\\*.jar "C:\\Program Files\\Apache Software Foundation\\Tomcat9\\webapps\\dev-app.jar" /Y'
+               bat 'copy target\\*.jar "C:\\deploy\\tomcat\\webapps\\dev-app.jar" /Y'
                 
             }
         }
@@ -64,7 +64,7 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo "Fazendo deploy no ambiente de Produção..."
-                bat 'copy target\\*.jar "C:\\Program Files\\Apache Software Foundation\\Tomcat9\\webapps\\dev-app.jar" /Y'
+                bat 'copy target\\*.jar "C:\\deploy\\tomcat\\webapps\\dev-app.jar" /Y'
 
             }
         }
